@@ -1,0 +1,25 @@
+{
+  "name": "MomentumIntegration",
+  "version": "0.0.0",
+  "authors": [
+    "chaaya"
+  ],
+  "description": "A polymer element for Momentum PM iframe",
+  "keywords": [
+    "iframe",
+    "dymamic",
+    "heights",
+    "integration"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#1.0.0"
+  }
+}

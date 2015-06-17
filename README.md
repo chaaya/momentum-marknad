@@ -1,5 +1,8 @@
 # momentum-marknad
-A polymer component for integrating Momentum Property Management system
+A polymer component for integrating Momentum Property Management system. 
+Uses following techniques for cross domain communication and event bubbling
+* HTML5 postMessage
+* CustomEvent
 
 ## Installing
 ```sh

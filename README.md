@@ -10,7 +10,7 @@ bower install momentum-marknad --save
 ## Usage
 ```html
 <!-- Polyfill Web Components for older browsers -->
-<script src="webcomponentsjs/webcomponents-lite.min.js"></script>
+<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
 <!-- Import element -->
 <link rel="import" href="bower_components/momentum-marknad/elements/momentum-marknad.html">

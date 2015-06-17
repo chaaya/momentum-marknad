@@ -23,7 +23,10 @@ bower install momentum-marknad --save
 ```
 
 ### Attributes
-+ url (string) required 
+#### Required 
++ url (string) 
+
+#### Optional 
 + noscroll (boolean, default false)
   - doesnt scroll to the top of the page when changing url inside of the iframe
 + hidemenu (boolean, default false)

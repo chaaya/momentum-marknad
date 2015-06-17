@@ -35,7 +35,7 @@ bower install momentum-marknad --save
   - the url wich contains your own login implementation using our API. when specified the component redirects to this url when login credentials are required inside of the iframe.
 
 ### Events
-```html
+```javascript
 myFrame.addEventListener("login", function(event) {
     //login required inside of iframe.
 });

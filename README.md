@@ -2,7 +2,10 @@
 A polymer component for integrating Momentum Property Management system
 
 ## Installing
-bower install momentum-marknad
+```sh
+bower install momentum-marknad --save
+```
+
 
 ## Usage
 ```html

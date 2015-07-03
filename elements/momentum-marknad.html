@@ -19,7 +19,7 @@
   <script>
 
     // element registration
-    Polymer({
+   MomentumMarknad = Polymer({
       is: "momentum-marknad",
 
       // add properties and methods on the element's prototype
@@ -42,7 +42,43 @@
         }
       },
 
-      ready: function() {
+      errorMessages: {
+        MISSING_URL_PARAM: 'Missing url property'
+      },
+
+      _validateUrlParam(url) {
+        if (!url) {
+            this.triggerError(this.errorMessages.MISSING_URL_PARAM);
+        }          
+      },
+
+      attached: function() {
+        this._validateUrlParam(this.url);
+      },
+
+     factoryImpl: function(url, designFolder, noscroll, hidemenu, loginpage){
+        this._validateUrlParam(url);
+
+        this.url = url;
+
+        if(designFolder)
+          this.designFolder = designFolder;
+
+         if(noscroll)
+          this.noscroll = noscroll;
+         
+         if(hidemenu)
+          this.hidemenu = hidemenu;
+         
+         if(loginpage)
+          this.loginpage = login
+     },
+
+     triggerError: function(error) {
+        throw new Error(error);
+     },
+	  
+     ready: function() {
         var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
         var eventer = window[eventMethod];
         var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";

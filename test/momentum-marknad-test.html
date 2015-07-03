@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+    <script src="../bower_components/webcomponentsjs/webcomponents.min.js"></script>
+  	<script src="../bower_components/web-component-tester/browser.js"></script>
+  	<link rel="import" href="../elements/momentum-marknad.html">
+ 	<style>
+ 		iframe {
+ 			display: none;
+ 		}
+ 	</style>
+</head>
+<script>
+
+	function deleteInterval(interval, onComplete) {
+		window.clearInterval(interval);
+		onComplete();
+	}
+
+	function checkEvent(intervalFunc, onComplete) {
+
+				var funcer = function () {
+					var loops = 0;
+					var isResolved = false;
+					var eventInterval;					
+					setInterval(
+						function() {
+							if(loops <= 5) {
+								deleteInterval(eventInterval, onComplete);														
+							} else {
+								var retVal = intervalFunc();
+								if(retVal) {
+									deleteInterval(eventInterval, onComplete);
+								}
+							}
+
+							loops++;
+						}
+						
+						, 1000);					
+					}
+
+				return funcer();
+
+
+	}
+
+	suite('Momentum marknad', function() {
+		var urlMissingException = 'Missing url property';
+		suite("constructor", function() {
+			
+			test('no url parameter should throw execption', function() {
+		      	expect(addElementWithoutUrl).to.throw(urlMissingException);
+		    });
+	    
+	    });  
+
+		suite("events", function() {
+			
+			test('should trigger page-visit', function(done) {
+				var eventTriggered = false;
+				var element = new MomentumMarknad("http://moms40.momentumsoftware.se/pgSearchResult.aspx");
+				document.body.appendChild(element);	
+							
+				
+				element.addEventListener('page-visit', function(event) {
+					eventTriggered = true;
+				});
+
+				checkEvent(
+					function() {
+						return eventTriggered;
+					},
+					function() {
+						expect(eventTriggered).to.be.true;
+						done();
+					}
+				); 
+
+		    });
+
+			test('should trigger login', function(done) {
+				var eventTriggered = false;
+				var element = new MomentumMarknad("http://moms40.momentumsoftware.se/pgSearchResult.aspx");
+				document.body.appendChild(element);	
+							
+				
+				element.addEventListener('login', function(event) {
+					eventTriggered = true;
+				});
+
+				checkEvent(
+					function() {
+						return eventTriggered;
+					},
+					function() {
+						expect(eventTriggered).to.be.true;
+						done();
+					}
+				); 
+
+		    });		    
+	    
+	    });  	     
+	});
+
+
+	function addElementWithoutUrl() {
+		var element = new MomentumMarknad();			
+		document.body.appendChild(element);
+	}
+
+</script>
+</head>
+<body>
+  <div id="mocha"><p><a href=".">Index</a></p></div>
+  <div id="messages"></div>
+  <div id="fixtures"></div>
+
+  
+  <script>mocha.run();</script>
+</body>
+</html>

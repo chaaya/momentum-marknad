@@ -58,7 +58,7 @@ Test implemented using web-component-tester. First install web-component-tester 
 ```sh
 npm install -g web-component-tester
 ```
-To run the test:
+To test the webcomponent, run this in the root folder.
 ```sh
 wct
 ```

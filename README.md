@@ -54,8 +54,11 @@ myFrame.addEventListener("client-registered", function(event) {
 ```
 
 ## Test
-Test implemented using web-component-tester. Run this command in the root folder.
+Test implemented using web-component-tester. First install web-component-tester using this command:
 ```sh
 npm install -g web-component-tester
+```
+To run the test:
+```sh
 wct
 ```

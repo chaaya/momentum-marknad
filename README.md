@@ -1,5 +1,5 @@
 # momentum-marknad
-A polymer component for integrating Momentum Property Management system. 
+A polymer component for integrating Momentum Property Management system.
 Uses following techniques for cross domain communication and event bubbling
 * [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)
 * [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)
@@ -16,17 +16,17 @@ bower install momentum-marknad --save
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
 
 <!-- Import element -->
-<link rel="import" href="bower_components/momentum-marknad/elements/momentum-marknad.html">
+<link rel="import" href="bower_components/momentum-marknad/components/momentum-marknad.html">
 
 <!-- Use element -->
 <momentum-marknad id="myFrame" url="http://moms40.momentumsoftware.se"></momentum-marknad>
 ```
 
 ### Attributes
-#### Required 
-+ url (string) 
+#### Required
++ url (string)
 
-#### Optional 
+#### Optional
 + noscroll (boolean, default false)
   - scroll to the top of the page when changing url inside of the iframe
 + hidemenu (boolean, default false)
@@ -44,16 +44,16 @@ myFrame.addEventListener("page-visit", function(event) {
 });
 
 myFrame.addEventListener("client-logged-in", function(event) {
-   // client logged in via an alternative method inside of the iframe. 
+   // client logged in via an alternative method inside of the iframe.
    // the alternativ method doesnt trigger the login event.
 });
 
 myFrame.addEventListener("client-registered", function(event) {
   ///a new client has been registered and logged in by the system
-});   
+});
 ```
 
-
-
-
-
+## Test
+```sh
+wct
+```

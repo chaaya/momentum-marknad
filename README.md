@@ -54,6 +54,7 @@ myFrame.addEventListener("client-registered", function(event) {
 ```
 
 ## Test
+Test implemented using web-component-tester. Run this command in the root folder.
 ```sh
 wct
 ```

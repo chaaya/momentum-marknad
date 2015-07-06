@@ -29,9 +29,19 @@ bower install momentum-marknad --save
 #### Optional
 + noscroll (boolean, default false)
   - scroll to the top of the page when changing url inside of the iframe
+
+```html
+  <momentum-marknad url="http://moms40.momentumsoftware.se" noscroll></momentum-marknad>
+```
 + hidemenu (boolean, default false)
+```html
+  <momentum-marknad url="http://moms40.momentumsoftware.se" hidemenu></momentum-marknad>
+```
 + loginpage (string, default no behaviour)
   - the url wich contains your own login implementation using our API. when specified the component redirects to this url when login credentials are required inside of the iframe.
+```html
+  <momentum-marknad url="http://moms40.momentumsoftware.se" loginpage="/login"></momentum-marknad>
+```
 
 ### Events
 ```javascript

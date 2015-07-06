@@ -14,7 +14,7 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "bower_components",
+    "bower_components"
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#1.0.0"

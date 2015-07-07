@@ -1,0 +1,28 @@
+{
+  "name": "momentum-marknad",
+  "version": "0.0.0",
+  "description": "A polymer component for integrating Momentum Property Management system.\r Uses following techniques for cross domain communication and event bubbling\r * [postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage)\r * [CustomEvent](https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent)",
+  "main": "wct.conf.js",
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "scripts": {
+    "test": "wct"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chaaya/momentum-marknad.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chaaya/momentum-marknad/issues"
+  },
+  "homepage": "https://github.com/chaaya/momentum-marknad",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "web-component-tester": "^3.2.0",
+    "webcomponents.js": "^0.7.2"
+  }
+}

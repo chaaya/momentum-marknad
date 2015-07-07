@@ -64,11 +64,11 @@ myFrame.addEventListener("client-registered", function(event) {
 ```
 
 ## Test
-Test implemented using web-component-tester. First install web-component-tester using this command:
+Test implemented using web-component-tester. Currently just Chrome due to bugs in web-component-tester.
 ```sh
-npm install -g web-component-tester
+npm install
 ```
 To test the webcomponent, run this in the root folder.
 ```sh
-wct
+gulp test:local
 ```

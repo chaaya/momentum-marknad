@@ -66,7 +66,8 @@ myFrame.addEventListener("client-registered", function(event) {
 ## Test
 Test implemented using web-component-tester. Currently just Chrome due to bugs in web-component-tester.
 ```sh
-npm install
+npm install 
+npm install -g gulp
 ```
 To test the webcomponent, run this in the root folder.
 ```sh

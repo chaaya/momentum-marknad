@@ -1,3 +1,5 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
 <dom-module id="momentum-login">
 
   <style>
@@ -13,6 +15,13 @@
 
     div.momentum-form-group button, div.momentum-form-group input[type="text"], div.momentum-form-group input[type="password"] {
       width: 100%;
+    }
+
+    iframe {
+      position: absolute;
+      top: -9999px;
+      width: 0px;
+      height: 0px;
     }
 
 
@@ -33,6 +42,7 @@
       <div class="momentum-form-group">
         <button id="login" type="submit" disabled class$="[[buttonClass]]">[[labelLogin]]</button>
       </div>
+      <iframe src$="[[url + '/APILoginLoader.aspx']]"></iframe>
     </form>
   </template>
 
@@ -73,6 +83,9 @@
         labelLogin: {
           type: String,
           value: 'Logga in'
+        },
+        loginRedirect: {
+          type: String
         }
       },
 
@@ -98,6 +111,7 @@
       },
 
       _doLogin: function(event) {
+        event.preventDefault();
         var username = this.$.username.value;
         if(this.$.rememberMe.checked) {
           localStorage.setItem(this._localStorageKeys.USERNAME, username);
@@ -105,7 +119,9 @@
           localStorage.removeItem(this._localStorageKeys.USERNAME);
         }
 
-        alert("Logged in");
+        if(this.loginRedirect) {
+          window.location = (this.loginRedirect[0] === '/' ? this.loginRedirect : '/' + this.loginRedirect);
+        }
       }
     });
   </script>

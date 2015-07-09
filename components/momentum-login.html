@@ -20,7 +20,7 @@
 
   <template>
     <!-- local DOM for your element -->
-    <section id="momentum-login-section">
+    <form id="momentum-login-section" on-submit="_doLogin">
       <div class="momentum-form-group">
         <input id="username" type="text" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phUsername]]"></input>
       </div>
@@ -31,9 +31,9 @@
         <input id="rememberMe" type="checkbox" class$="[[checkboxClass]]"></input> <span>[[labelRememberMe]]</span>
       </div>
       <div class="momentum-form-group">
-        <button id="login" on-click="_doLogin" disabled class$="[[buttonClass]]">[[labelLogin]]</button>
+        <button id="login" type="submit" disabled class$="[[buttonClass]]">[[labelLogin]]</button>
       </div>
-    </section>
+    </form>
   </template>
 
   <script>
@@ -85,7 +85,7 @@
       },
 
       _validateForm: function(event) {
-        this.$.login.disabled = ((this.$.username.value == '') || (this.$.password.value == ''))
+        this.$.login.disabled = ((this.$.username.value == '') || (this.$.password.value == ''));
       },
 
       _initializeState: function() {
@@ -104,6 +104,8 @@
         } else {
           localStorage.removeItem(this._localStorageKeys.USERNAME);
         }
+
+        alert("Logged in");
       }
     });
   </script>

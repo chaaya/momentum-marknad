@@ -1,0 +1,111 @@
+<dom-module id="momentum-login">
+
+  <style>
+    /* Set iframe to 100% */
+
+    section#momentum-login-section {
+       width: 100% !important;
+    }
+
+    div.momentum-form-group {
+      margin-bottom: 10px;
+    }
+
+    div.momentum-form-group button, div.momentum-form-group input[type="text"], div.momentum-form-group input[type="password"] {
+      width: 100%;
+    }
+
+
+  </style>
+
+  <template>
+    <!-- local DOM for your element -->
+    <section id="momentum-login-section">
+      <div class="momentum-form-group">
+        <input id="username" type="text" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phUsername]]"></input>
+      </div>
+      <div class="momentum-form-group">
+        <input id="password" type="password" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phPassword]]"></input>
+      </div>
+      <div class="momentum-form-group">
+        <input id="rememberMe" type="checkbox" class$="[[checkboxClass]]"></input> <span>[[labelRememberMe]]</span>
+      </div>
+      <div class="momentum-form-group">
+        <button id="login" on-click="_doLogin" disabled class$="[[buttonClass]]">[[labelLogin]]</button>
+      </div>
+    </section>
+  </template>
+
+  <script>
+
+    // element registration
+   MomentumLogin = Polymer({
+      is: "momentum-login",
+
+      // add properties and methods on the element's prototype
+
+      properties: {
+        // declare properties for the element's public API
+        url: {
+          type: String //required
+        },
+        inputClass: {
+          type: String
+        },
+        checkboxClass: {
+          type: String
+        },
+        buttonClass: {
+          type: String
+        },
+        phUsername: {
+          type: String,
+          value: 'Användarnamn'
+        },
+        phPassword: {
+          type: String,
+          value: 'Lösenord'
+        },
+        labelRememberMe: {
+          type: String,
+          value: 'Kom ihåg mitt användarnamn'
+        },
+        labelLogin: {
+          type: String,
+          value: 'Logga in'
+        }
+      },
+
+      _localStorageKeys: {
+        USERNAME: 'momentumsoftware/username'
+      },
+      ready: function() {
+        this._initializeState();
+        var self = this;
+      },
+
+      _validateForm: function(event) {
+        this.$.login.disabled = ((this.$.username.value == '') || (this.$.password.value == ''))
+      },
+
+      _initializeState: function() {
+        var savedUsername = localStorage.getItem(this._localStorageKeys.USERNAME);
+        if(savedUsername)
+        {
+          this.$.username.value = savedUsername;
+          this.$.rememberMe.checked = true;
+        }
+      },
+
+      _doLogin: function(event) {
+        var username = this.$.username.value;
+        if(this.$.rememberMe.checked) {
+          localStorage.setItem(this._localStorageKeys.USERNAME, username);
+        } else {
+          localStorage.removeItem(this._localStorageKeys.USERNAME);
+        }
+      }
+    });
+  </script>
+
+</dom-module>

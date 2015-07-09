@@ -18,6 +18,7 @@
     }
 
     iframe {
+      display: none;
       position: absolute;
       top: -9999px;
       width: 0px;
@@ -31,22 +32,28 @@
     <!-- local DOM for your element -->
     <form id="momentum-login-section" on-submit="_doLogin">
       <div class="momentum-form-group">
-        <input id="username" type="text" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phUsername]]">
+        <input id="username" type="text" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phUsername]]"></input>
       </div>
       <div class="momentum-form-group">
-        <input id="password" type="password" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phPassword]]">
+        <input id="password" type="password" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phPassword]]"></input>
       </div>
       <div class="momentum-form-group">
-        <input id="rememberMe" type="checkbox" class$="[[checkboxClass]]"> <span>[[labelRememberMe]]</span>
+        <input id="rememberMe" type="checkbox" class$="[[checkboxClass]]"></input> <span>[[labelRememberMe]]</span>
       </div>
       <div class="momentum-form-group">
         <button id="login" type="submit" disabled class$="[[buttonClass]]">[[labelLogin]]</button>
       </div>
-      <iframe src$="[[url + '/APILoginLoader.aspx']]"></iframe>
+      <iframe src$="{{sessionStarterUrl}}" on-load="_onSessionStarterLoad"></iframe>
     </form>
   </template>
 
   <script>
+    //global private variables to track how many times on-load="_onApiLoginLoaderLoad" has been trigged.
+    //it will first trigger without the APILoginLoader.aspx page and after its computed trigger once again.
+    var iframeOnLoadCalls = 0;
+    var sessionStarted = function() {
+      return (iframeOnLoadCalls == 2);
+    };
 
     // element registration
    MomentumLogin = Polymer({
@@ -86,6 +93,14 @@
         },
         loginRedirect: {
           type: String
+        },
+        sessionStarterUrl: {
+          type: String,
+          computed: '_computeSessionStarterUrl(url, "APILoginLoader.aspx")'
+        },
+        apiUrl: {
+          type: String,
+          computed: '_computeApiUrl(url, "API/Service/AuthorizationServiceHandler.ashx")'
         }
       },
 
@@ -93,8 +108,14 @@
         USERNAME: 'momentumsoftware/username'
       },
       ready: function() {
+        this._validateAttributes();
         this._initializeState();
-        var self = this;
+      },
+
+      _validateAttributes: function() {
+        if(!this.url) {
+          throw new Error('url attribute is not defined');
+        }
       },
 
       _validateForm: function(event) {
@@ -120,8 +141,22 @@
         }
 
         if(this.loginRedirect) {
-          window.location = (this.loginRedirect[0] === '/' ? this.loginRedirect : '/' + this.loginRedirect);
+            window.location = (this.loginRedirect[0] === '/' ? this.loginRedirect : '/' + this.loginRedirect);
         }
+
+      },
+      _computeSessionStarterUrl: function(url, page) {
+          var sessionStarterUrl = (url[url.length] === '/' ? url : url + '/' + page);
+          return sessionStarterUrl;
+      },
+
+      _computeApiUrl: function(url, endpoint){
+        var apiUrl = (url[url.length] === '/' ? url : url + '/' + endpoint);
+        return apiUrl;
+      },
+
+      _onSessionStarterLoad: function() {
+        iframeOnLoadCalls++;
       }
     });
   </script>

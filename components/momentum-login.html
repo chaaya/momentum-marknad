@@ -28,7 +28,7 @@
     div.error-message {
       padding-top: 10px;
       color: red;
-    }    
+    }
 
   </style>
 
@@ -93,7 +93,7 @@
 
       properties: {
         // declare properties for the element's public API
-        url: {
+        baseUrl: {
           type: String //required
         },
         inputClass: {
@@ -123,13 +123,16 @@
         },
         labelLoginError: {
           type: String
-        },        
+        },
         loginRedirect: {
           type: String
         },
         apiUrl: {
           type: String,
-          computed: '_computeApiUrl(url, "API/Service/AuthorizationServiceHandler.ashx?syndicateNo=1&companyNo=-1&username={username}&password={password}&Method=APILogin")'
+          computed: '_computeApiUrl(baseUrl, "API/Service/AuthorizationServiceHandler.ashx?syndicateNo=1&companyNo=-1&username={username}&password={password}&Method=APILogin")'
+        },
+        pageAfterLogin: {
+          type: String
         }
       },
 
@@ -142,8 +145,8 @@
       },
 
       _validateAttributes: function() {
-        if(!this.url) {
-          throw new Error('url attribute is not defined');
+        if(!this.baseUrl) {
+          throw new Error('base-url attribute is not defined');
         }
       },
 
@@ -157,6 +160,11 @@
         {
           this.$.username.value = savedUsername;
           this.$.rememberMe.checked = true;
+        }
+
+        var pageAfterLogin = this._getQueryParameterByName('url');
+        if(pageAfterLogin) {
+          this.pageAfterLogin = pageAfterLogin;
         }
       },
 
@@ -174,13 +182,15 @@
           function(user) {
             self.fire('user-logged-in', user);
             if(self.loginRedirect) {
-                window.location = (self.loginRedirect[0] === '/' ? self.loginRedirect : '/' + self.loginRedirect);
+                var loginRedirectFixed = (self.loginRedirect[0] === '/' ? self.loginRedirect : '/' + self.loginRedirect);
+                var finalRedirectUrl = (self.pageAfterLogin ? loginRedirectFixed + '?url=' + encodeURIComponent(self.pageAfterLogin) : loginRedirectFixed);
+                window.location = finalRedirectUrl;
             }
           },
           function(msg) {
             self.fire('user-rejected', msg);
             console.log(msg);
-            self.labelLoginError = msg;            
+            self.labelLoginError = msg;
           }
         );
       },
@@ -219,6 +229,18 @@
             return 'Ett okänt fel med dina inloggningsupgifter. Kontakta bostadsbolaget för mer info.'
         }
 
+      },
+
+      _getQueryParameterByName: function(name) {
+        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/gi, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS, "i");
+        var results = regex.exec(window.location.href);
+        if (results == null) {
+            return "";
+        } else {
+          return decodeURIComponent(results[1].replace(/\+/gi, " "));
+        }
       }
     });
   </script>

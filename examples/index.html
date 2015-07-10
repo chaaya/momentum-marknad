@@ -31,7 +31,7 @@
             
             var myFrame = document.getElementById("myFrame");
 
-            myFrame.addEventListener("login", function(event) {
+            myFrame.addEventListener("login-required", function(event) {
                 //login required inside of iframe.
             });
 
@@ -39,7 +39,7 @@
                //new page loaded inside of the iframe
             });
 
-            myFrame.addEventListener("client-logged-in", function(event) {
+            myFrame.addEventListener("user-logged-in", function(event) {
                // client logged in via an alternative method inside of the iframe. 
                // the alternativ method doesnt trigger the login event.
             });

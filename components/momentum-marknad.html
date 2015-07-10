@@ -108,9 +108,9 @@
           if(msg.type == "event") {
             switch(msg.name) {
               case "momentumEvents.loginRequired":
-                self.fire("login", "/" + msg.data);
+                self.fire("login-required", msg.data);
                 if(self.loginpage) {
-                  var encodedReturnURL = encodeURIComponent("/" + msg.data);
+                  var encodedReturnURL = encodeURIComponent(msg.data);
                   var loginpage = (self.loginpage[0] != "/" ? "/" : "");
                   loginpage += self.loginpage + (self.loginpage.indexOf("?") == -1 ? "?url=" : "&url=") + encodedReturnURL
                   window.location = loginpage;
@@ -122,7 +122,7 @@
                 break;
 
               case "momentumEvents.updateLoginStatus":
-                self.fire("client-logged-in", msg.data);
+                self.fire("user-logged-in", msg.data);
                 break;
             }
           }

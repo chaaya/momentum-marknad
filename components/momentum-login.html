@@ -32,13 +32,13 @@
     <!-- local DOM for your element -->
     <form id="momentum-login-section" on-submit="_doLogin">
       <div class="momentum-form-group">
-        <input id="username" type="text" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phUsername]]"></input>
+        <input id="username" type="text" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phUsername]]">
       </div>
       <div class="momentum-form-group">
-        <input id="password" type="password" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phPassword]]"></input>
+        <input id="password" type="password" on-keyup="_validateForm" class$="[[inputClass]]" placeholder$="[[phPassword]]">
       </div>
       <div class="momentum-form-group">
-        <input id="rememberMe" type="checkbox" class$="[[checkboxClass]]"></input> <span>[[labelRememberMe]]</span>
+        <input id="rememberMe" type="checkbox" class$="[[checkboxClass]]"> <span>[[labelRememberMe]]</span>
       </div>
       <div class="momentum-form-group">
         <button id="login" type="submit" disabled class$="[[buttonClass]]">[[labelLogin]]</button>
@@ -54,6 +54,32 @@
     var sessionStarted = function() {
       return (iframeOnLoadCalls == 2);
     };
+
+    var loadJSONP = (function(){
+      var unique = 0;
+      return function(url, callback, context) {
+        // INIT
+        var name = "_jsonp_" + unique++;
+        if (url.match(/\?/)) url += "&callback="+name;
+        else url += "?callback="+name;
+        
+        // Create script
+        var script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.src = url;
+        
+        // Setup handler
+        window[name] = function(data){
+          callback.call((context || window), data);
+          document.getElementsByTagName('head')[0].removeChild(script);
+          script = null;
+          delete window[name];
+        };
+        
+        // Load JSON
+        document.getElementsByTagName('head')[0].appendChild(script);
+      };
+    })();    
 
     // element registration
    MomentumLogin = Polymer({
@@ -100,7 +126,7 @@
         },
         apiUrl: {
           type: String,
-          computed: '_computeApiUrl(url, "API/Service/AuthorizationServiceHandler.ashx")'
+          computed: '_computeApiUrl(url, "API/Service/AuthorizationServiceHandler.ashx?syndicateNo=1&companyNo=-1&username={username}&password={password}&Method=APILogin")'
         }
       },
 
@@ -133,17 +159,44 @@
 
       _doLogin: function(event) {
         event.preventDefault();
-        var username = this.$.username.value;
+        var self = this;
+        this.$.username.value;
         if(this.$.rememberMe.checked) {
-          localStorage.setItem(this._localStorageKeys.USERNAME, username);
+          localStorage.setItem(this._localStorageKeys.USERNAME, this.$.username.value);
         } else {
           localStorage.removeItem(this._localStorageKeys.USERNAME);
         }
 
-        if(this.loginRedirect) {
-            window.location = (this.loginRedirect[0] === '/' ? this.loginRedirect : '/' + this.loginRedirect);
-        }
+        this._callLoginAPI(this.$.username.value, this.$.password.value, 
+          function(user) {
+            self.fire('user-logged-in', user); 
+            if(self.loginRedirect) {
+                window.location = (self.loginRedirect[0] === '/' ? self.loginRedirect : '/' + self.loginRedirect);
+            }            
+          }, 
+          function(msg) {
+            self.fire('user-rejected', msg);
+            console.log(msg);
+          }
+        );
+      },
 
+      _callLoginAPI: function(username, password, onSuccess, onError) {
+        var requestUrl = this.apiUrl.replace('{username}', username).replace('{password}', password);
+        loadJSONP(requestUrl, 
+          function(response) {
+            if(!response)
+            {
+              onError('Inloggningstjänsten svarar inte');
+            } else {
+              if(response.LoggedIn) {
+                onSuccess(response)
+              } else {
+                onError(this._getErrorMessage(reponse.ReturnCode));
+              }
+            }
+          }
+        );
       },
       _computeSessionStarterUrl: function(url, page) {
           var sessionStarterUrl = (url[url.length] === '/' ? url : url + '/' + page);
@@ -157,6 +210,18 @@
 
       _onSessionStarterLoad: function() {
         iframeOnLoadCalls++;
+      },
+
+      _getErrorMessage: function(returnCode) {
+        switch (returnCode) {
+          case 'NOMATCH':
+            return 'Felaktiga inloggningsuppgifter';
+          case 'BLOCKED':
+            return 'Ditt konto är spärrat';
+          default: 
+            return 'Ett okänt fel med dina inloggningsupgifter. Kontakta bostadsbolaget för mer info.'
+        }
+
       }
     });
   </script>

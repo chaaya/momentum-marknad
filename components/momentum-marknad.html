@@ -13,7 +13,7 @@
 
   <template>
     <!-- local DOM for your element -->
-    <iframe id="momentum" src={{url}} scrolling="no" frameBorder="0"></iframe> <!-- data bindings in local DOM -->
+    <iframe id="momentum" src={{iframeSrc}} scrolling="no" frameBorder="0"></iframe> <!-- data bindings in local DOM -->
   </template>
 
   <script>
@@ -26,8 +26,16 @@
 
       properties: {
         // declare properties for the element's public API
-        url: {
+        baseUrl: {
           type: String //required
+        },
+        page: {
+          type: String,
+          value: 'pgSearchResult.aspx'
+        },
+        iframeSrc: {
+          type: String,
+          computed: '_computeIframeSrc(baseUrl, page)'
         },
         noscroll: {
           type: Boolean,
@@ -37,7 +45,7 @@
           type: Boolean,
           value: false
         },
-        loginpage: {
+        loginPage: {
           type: String
         }
       },
@@ -48,18 +56,18 @@
 
       _validateUrlParam(url) {
         if (!url) {
-            this.triggerError(this.errorMessages.MISSING_URL_PARAM);
+            this._triggerError(this.errorMessages.MISSING_URL_PARAM);
         }
       },
 
       attached: function() {
-        this._validateUrlParam(this.url);
+        this._validateUrlParam(this.baseUrl);
       },
 
-     factoryImpl: function(url, designFolder, noscroll, hidemenu, loginpage){
-        this._validateUrlParam(url);
+     factoryImpl: function(baseUrl, designFolder, noscroll, hidemenu, loginPage){
+        this._validateUrlParam(baseUrl);
 
-        this.url = url;
+        this.baseUrl = baseUrl;
 
         if(designFolder)
           this.designFolder = designFolder;
@@ -70,11 +78,11 @@
          if(hidemenu)
           this.hidemenu = hidemenu;
 
-         if(loginpage)
-          this.loginpage = login
+         if(loginPage)
+          this.loginPage = login
      },
 
-     triggerError: function(error) {
+     _triggerError: function(error) {
         throw new Error(error);
      },
 
@@ -83,9 +91,14 @@
         var eventer = window[eventMethod];
         var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
         var self = this;
+        var requestedPageViaQueryParam = self._getQueryParameterByName('url');
+
+        if(requestedPageViaQueryParam) {
+          self.page = requestedPageViaQueryParam;
+        }
 
         if(self.hidemenu) {
-          self.url = self.url + "?hideMenu=true";
+          self.baseUrl = self.baseUrl + "?hideMenu=true";
         }
 
 
@@ -109,11 +122,11 @@
             switch(msg.name) {
               case "momentumEvents.loginRequired":
                 self.fire("login-required", msg.data);
-                if(self.loginpage) {
+                if(self.loginPage) {
                   var encodedReturnURL = encodeURIComponent(msg.data);
-                  var loginpage = (self.loginpage[0] != "/" ? "/" : "");
-                  loginpage += self.loginpage + (self.loginpage.indexOf("?") == -1 ? "?url=" : "&url=") + encodedReturnURL
-                  window.location = loginpage;
+                  var loginPage = (self.loginPage[0] != "/" ? "/" : "");
+                  loginPage += self.loginPage + (self.loginPage.indexOf("?") == -1 ? "?url=" : "&url=") + encodedReturnURL
+                  window.location = loginPage;
                 }
                 break;
 
@@ -128,6 +141,24 @@
           }
 
         },false);
+      },
+
+      _computeIframeSrc: function(baseUrl, page) {
+        var page = (page[page.length] === '/' ? page.substr(1) : page);
+        var iframeSrc = (baseUrl[baseUrl.length] === '/' ? baseUrl + page : baseUrl + '/' + page);
+        return iframeSrc;
+      },
+
+      _getQueryParameterByName: function(name) {
+        name = name.replace(/[\[]/, "\\\[").replace(/[\]]/gi, "\\\]");
+        var regexS = "[\\?&]" + name + "=([^&#]*)";
+        var regex = new RegExp(regexS, "i");
+        var results = regex.exec(window.location.href);
+        if (results == null) {
+            return "";
+        } else {
+          return decodeURIComponent(results[1].replace(/\+/gi, " "));
+        }
       }
     });
   </script>

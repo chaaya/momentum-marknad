@@ -43,7 +43,6 @@
       <div class="momentum-form-group">
         <button id="login" type="submit" disabled class$="[[buttonClass]]">[[labelLogin]]</button>
       </div>
-      <iframe src$="{{sessionStarterUrl}}" on-load="_onSessionStarterLoad"></iframe>
     </form>
   </template>
 
@@ -62,12 +61,12 @@
         var name = "_jsonp_" + unique++;
         if (url.match(/\?/)) url += "&callback="+name;
         else url += "?callback="+name;
-        
+
         // Create script
         var script = document.createElement('script');
         script.type = 'text/javascript';
         script.src = url;
-        
+
         // Setup handler
         window[name] = function(data){
           callback.call((context || window), data);
@@ -75,11 +74,11 @@
           script = null;
           delete window[name];
         };
-        
+
         // Load JSON
         document.getElementsByTagName('head')[0].appendChild(script);
       };
-    })();    
+    })();
 
     // element registration
    MomentumLogin = Polymer({
@@ -119,10 +118,6 @@
         },
         loginRedirect: {
           type: String
-        },
-        sessionStarterUrl: {
-          type: String,
-          computed: '_computeSessionStarterUrl(url, "APILoginLoader.aspx")'
         },
         apiUrl: {
           type: String,
@@ -167,13 +162,13 @@
           localStorage.removeItem(this._localStorageKeys.USERNAME);
         }
 
-        this._callLoginAPI(this.$.username.value, this.$.password.value, 
+        this._callLoginAPI(this.$.username.value, this.$.password.value,
           function(user) {
-            self.fire('user-logged-in', user); 
+            self.fire('user-logged-in', user);
             if(self.loginRedirect) {
                 window.location = (self.loginRedirect[0] === '/' ? self.loginRedirect : '/' + self.loginRedirect);
-            }            
-          }, 
+            }
+          },
           function(msg) {
             self.fire('user-rejected', msg);
             console.log(msg);
@@ -183,7 +178,7 @@
 
       _callLoginAPI: function(username, password, onSuccess, onError) {
         var requestUrl = this.apiUrl.replace('{username}', username).replace('{password}', password);
-        loadJSONP(requestUrl, 
+        loadJSONP(requestUrl,
           function(response) {
             if(!response)
             {
@@ -198,18 +193,10 @@
           }
         );
       },
-      _computeSessionStarterUrl: function(url, page) {
-          var sessionStarterUrl = (url[url.length] === '/' ? url : url + '/' + page);
-          return sessionStarterUrl;
-      },
 
       _computeApiUrl: function(url, endpoint){
         var apiUrl = (url[url.length] === '/' ? url : url + '/' + endpoint);
         return apiUrl;
-      },
-
-      _onSessionStarterLoad: function() {
-        iframeOnLoadCalls++;
       },
 
       _getErrorMessage: function(returnCode) {
@@ -218,7 +205,7 @@
             return 'Felaktiga inloggningsuppgifter';
           case 'BLOCKED':
             return 'Ditt konto är spärrat';
-          default: 
+          default:
             return 'Ett okänt fel med dina inloggningsupgifter. Kontakta bostadsbolaget för mer info.'
         }
 

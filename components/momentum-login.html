@@ -25,6 +25,14 @@
       height: 0px;
     }
 
+    div.no-margin-bottom {
+      margin-bottom: 0px;
+    }
+
+    div.error-message {
+      padding-top: 10px;
+      color: red;
+    }
 
   </style>
 
@@ -40,8 +48,9 @@
       <div class="momentum-form-group">
         <input id="rememberMe" type="checkbox" class$="[[checkboxClass]]"> <span>[[labelRememberMe]]</span>
       </div>
-      <div class="momentum-form-group">
+      <div class="momentum-form-group no-margin-bottom">
         <button id="login" type="submit" disabled class$="[[buttonClass]]">[[labelLogin]]</button>
+        <div class="error-message">[[labelLoginError]]</div>
       </div>
       <iframe src$="{{sessionStarterUrl}}" on-load="_onSessionStarterLoad"></iframe>
     </form>
@@ -117,6 +126,9 @@
           type: String,
           value: 'Logga in'
         },
+        labelLoginError: {
+          type: String
+        },        
         loginRedirect: {
           type: String
         },
@@ -177,12 +189,14 @@
           function(msg) {
             self.fire('user-rejected', msg);
             console.log(msg);
+            self.labelLoginError = msg;
           }
         );
       },
 
       _callLoginAPI: function(username, password, onSuccess, onError) {
-        var requestUrl = this.apiUrl.replace('{username}', username).replace('{password}', password);
+        var self = this;
+        var requestUrl = self.apiUrl.replace('{username}', username).replace('{password}', password);
         loadJSONP(requestUrl, 
           function(response) {
             if(!response)
@@ -192,7 +206,7 @@
               if(response.LoggedIn) {
                 onSuccess(response)
               } else {
-                onError(this._getErrorMessage(reponse.ReturnCode));
+                onError(self._getErrorMessage(response.ReturnCode));
               }
             }
           }

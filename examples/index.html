@@ -24,11 +24,11 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
         <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
         <link rel="import" href="../components/momentum-marknad.html">
-        
+
 
         <script type="text/javascript">
             document.addEventListener("DOMContentLoaded", function() {
-            
+
             var myFrame = document.getElementById("myFrame");
 
             myFrame.addEventListener("login-required", function(event) {
@@ -40,17 +40,17 @@
             });
 
             myFrame.addEventListener("user-logged-in", function(event) {
-               // client logged in via an alternative method inside of the iframe. 
+               // client logged in via an alternative method inside of the iframe.
                // the alternativ method doesnt trigger the login event.
             });
 
             myFrame.addEventListener("client-registered", function(event) {
               ///a new client has been registered and logged in by the system
-            });                                          
+            });
 
           });
         </script>
-       
+
 
     </head>
     <body>
@@ -72,7 +72,7 @@
       </nav>
 
       <div class="container">
-          <momentum-marknad id="myFrame" loginpage="/examples/login.html" url="http://moms40.momentumsoftware.se"></momentum-marknad>
-      </div>    
+          <momentum-marknad id="myFrame" login-page="/examples/login.html" base-url="http://moms40.momentumsoftware.se/"></momentum-marknad>
+      </div>
     </body>
 </html>
